@@ -26,7 +26,7 @@ https://github.com/jainishshah0124/Crytozombie
 
 6. Deployed the DApp to Sepolia.
    
-7. Part from starter pack below are the additional functionalities :
+7. Apart from starter pack below are the additional functionalities :
     - Bulk Zombie Leve-Up
     - Create Bulk Zombie
     - Transfer Bulk Zombie
