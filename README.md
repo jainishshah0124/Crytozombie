@@ -26,7 +26,7 @@ https://github.com/jainishshah0124/Crytozombie
 
 6. Deployed the DApp to Sepolia.
    
-7. Part from starter pack below are the additional functionalities :
+7. Apart from starter pack below are the additional functionalities :
     - Bulk Zombie Leve-Up
     - Create Bulk Zombie
     - Transfer Bulk Zombie
@@ -64,9 +64,9 @@ https://github.com/jainishshah0124/Crytozombie
     - for sepolia use `truffle migrate --network sepolia`
 
 5. Create a key.json file. Put the contract address from ZombieOwnership there. Here's the format.
-   '{
+   `{
     "Ganacheaddress" : "Your ZombieOwnership contract address from ganache"
-   }'
+   }`
 
 6. Create a .env file. Put infura API and private key as
     INFURA_API_KEY=<Infura_KEY>
@@ -98,9 +98,9 @@ https://github.com/jainishshah0124/Crytozombie
 3. Deploy using command `truffle migrate --network sepolia`
 
 4. Update key.json with your passphrase from metamask, apikey from Infura, and contract address after deploying
-    '{
+    `{
         "OwnershipAddress" : "Your ZombieOwnership contract address from sepolia"
-    }'
+    }`
 
 5. In index.html use `var cryptoZombiesAddress = secrets.OwnershipAddress;` for sepolia at line 151
 
