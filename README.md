@@ -1,4 +1,4 @@
-# Team BlockWizards
+# Team MetaZombies
 
 1. Drashti Mehta - 889212452 - dumehta@csu.fullerton.edu
 
