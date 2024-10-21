@@ -51,17 +51,17 @@ https://github.com/jainishshah0124/Crytozombie
 # To run this application
 
 1. Install the dependencies using `npm install`
-    -- If specific version needed use nvm and start using that version with nvm use.
+    - If specific version needed use nvm and start using that version with nvm use.
 
 2. Install Ganache and update the `truffle-config.js` file with the its network configuration.
 
 3. Compile all the contracts using `truffle compile`.
-    -- for ganache use `truffle compile --network development`
-    -- for sepolia use `truffle compile --network sepolia`
+    - for ganache use `truffle compile --network development`
+    - for sepolia use `truffle compile --network sepolia`
 
 4. Migrate all the contracts using `truffle migrate`.
-    -- for ganache use `truffle migrate --network development`
-    -- for sepolia use `truffle migrate --network sepolia`
+    - for ganache use `truffle migrate --network development`
+    - for sepolia use `truffle migrate --network sepolia`
 
 5. Create a key.json file. Put the contract address from ZombieOwnership there. Here's the format.
    '{
