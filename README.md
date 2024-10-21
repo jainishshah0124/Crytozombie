@@ -2,7 +2,7 @@
 
 1. Drashti Mehta - 889212452 - dumehta@csu.fullerton.edu
 
-2. Jainish SHah - 885154104 - jainishshah0124@csu.fullerton.edu
+2. Jainish Shah - 885154104 - jainishshah0124@csu.fullerton.edu
 
 3. Hiral Pokiya - 818055535 - hiral14@csu.fullerton.edu
 
