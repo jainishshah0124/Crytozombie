@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>CryptoZombies Front-End</title>
+  <link rel="icon" href="favicon.ico">
+  <!-- Tailwind CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
+  <script language="javascript" type="text/javascript" src="cryptozombies_abi.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="./bulkCreation.js" defer></script>
+</head>
+
+<body class="min-h-screen">
+    
+    <div class="containers">
+        <div class="sidebar">
+          <button class="menu-button">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="sidebar-content">
+            <button class="showZombieButton btn bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out">
+              Show Zombies
+            </button>
+            <button class="createzombieButton btn bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out">
+              Create Zombie
+            </button>
+            <button class="levelupButton btn bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out">
+              Level Up
+            </button>
+            <button class="transferZombieButton btn bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out">
+              Transfer
+            </button>
+            <button class="bulkCreationButton btn bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out">
+                Bulk Creation
+            </button>
+            <button class="bulkDeleteButton btn bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out">
+              Bulk Delete
+          </button>
+          <button class="showNftsButton btn bg-gray-600 hover:bg-gray-450 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out" onclick="marketnfts()">
+            Show NFTs
+          </button>
+          </div>
+        </div>
+        <div class="main-content">
+            <div class="container mx-auto py-10">
+                <h1 class="text-center text-5xl font-bold mb-10">Welcome to CryptoZombies</h1>
+            </div>
+            <div>
+                <div id="txStatus" class="text-center text-yellow-300"></div>
+                <!-- Dropdown HTML -->
+                <div id="recipientDropdownContainer" class="flex justify-center mt-4" style="display: none;">
+                    <select id="recipientDropdown" class="bg-gray-700 text-white p-2 rounded">
+                    <option value="">-- Select an Account --</option>
+                    </select>
+                </div>
+              
+                <!-- Zombie Cards will now have a red "Change Name" button -->
+                <div id="zombies" class="justify-center" style="display: flex; flex-wrap: wrap;"></div>
+            
+                <div id="zombieModal" class="zombie-modal hidden">
+                    <div class="modal-content">
+                        <h3 class="text-2xl mb-4">Enter Details</h3>
+                        <form id="changeNameForm">
+                        <label for="zombieId" class="hidden">Zombie ID:</label>
+                        <input type="number" id="zombieId" name="zombieId" class="hidden w-full p-2 border mb-4" style="color: black;" readonly required>
+                        
+                        <input type="text" id="newName" name="newName" placeholder="New Zombie Name" class="w-full p-2 border mb-4 hidden rounded-lg" style="color: black;">
+            
+                        <input type="text" id="newDNA" placeholder="New Zombie DNA" name="newDNA" class="w-full p-2 border mb-4 hidden rounded-lg" style="color: black;"/>
+
+                        <input type="text" id="zombieIdToSell" style="color: black;" placeholder="Zombie ID" class="hidden w-full p-2 border rounded-lg mb-4" />
+                        <input type="text" id="salePrice" style="color: black;" placeholder="Price in ETH" class= "hidden w-full p-2 border mb-4 rounded-lg" />
+                        
+                        <button type="submit" id="listZombieButton" class="btn bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hidden">List on Marketplace</button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hidden" id="btnname">Change Name</button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hidden" id="btnDNA">Change DNA</button>
+                        <button type="button" id="closeModal" class="bg-red-500 text-white px-4 py-2 rounded-lg ml-2">Cancel</button>
+                        </form>
+                    </div>
+                    
+                </div>
+            
+                <div id="bulkCreationModal" class="zombie-modal hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center">
+                    <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-96">
+                      <h3 class="text-2xl mb-4">Bulk Create Zombies</h3>
+                      <form id="bulkCreationForm">
+                        <div id="bulkFieldsContainer">
+                          <div class="bulk-field mb-4">
+                            <label for="bulkName1">Name:</label>
+                            <input type="text" name="bulkName" style="color: black;"  class="w-full p-2 border mb-2">
+                            <label for="bulkDNA1">DNA:</label>
+                            <input type="text" name="bulkDNA" style="color: black;"  class="w-full p-2 border">
+                          </div>
+                        </div>
+                        <button type="button" id="addBulkField" class="bg-green-500 text-white px-3 py-2 rounded-full mb-4">
+                            <i class="fas fa-plus"></i>
+                          </button>              <br>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Submit</button>
+                        <button type="button" id="closeBulkModal" class="bg-red-500 text-white px-4 py-2 rounded-lg ml-2">Cancel</button>
+                      </form>
+                    </div>
+                  </div>
+            
+                   
+              </div>
+        </div>
+      </div>
+
+      <div id="opponentFightModal" class="opponent-modal hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center">
+        <div class="opponent-modal-content">
+          <button type="button" id="closeOpponentModal">✖</button>
+          <h3 class="text-2xl mb-4 text-white">Select Opponent Zombie</h3>
+          <div id="opponentZombiesContainer" class="opponent-zombies-row"></div>
+        </div>
+      </div>    
+      
+      <div id="fightLoading" class="fight-loading hidden">
+        <div class="loading-icon"></div>
+        <p>Zombies are fighting...</p>
+      </div>
+            
+      
+  <script>
+    var cryptoZombies;
+    var userAccount;
+    const showZombieButton = document.querySelector('.showZombieButton');
+    const createzombieButton = document.querySelector('.createzombieButton');
+    const levelupButton = document.querySelector('.levelupButton');
+
+    async function fetchSecrets() {
+      try {
+        const response = await fetch('key.json');
+        const secrets = await response.json();
+        return secrets;
+      } catch (error) {
+        console.error('Error fetching secrets:', error);
+        return null;
+      }
+    }
+
+    async function startApp() {
+      const secrets = await fetchSecrets();
+
+      if(secrets){
+        //var cryptoZombiesAddress = secrets.OwnershipAddress;
+        var cryptoZombiesAddress = secrets.Ganacheaddress;
+        
+
+        cryptoZombies = new web3.eth.Contract(cryptoZombiesABI, cryptoZombiesAddress);
+
+        // The following code from Lesson 6, chapter 5 is obsolete
+        // var accountInterval = setInterval(function () {
+        // if (web3.eth.accounts[0] !== userAccount) {
+        // userAccount = web3.eth.accounts[0];
+        // getZombiesByOwner(userAccount)
+        // .then(displayZombies);
+        // }
+        // }, 100);
+
+        cryptoZombies.events.Transfer({ filter: { _to: userAccount } })
+          .on("data", function (event) {
+            let data = event.returnValues;
+            getZombiesByOwner(userAccount).then(displayZombies);
+          }).on("error", console.error);
+      }else{
+        console.error('Secrets not found or invalid.');
+      }
+    }
+
+    function openModal(zombieId,change) {
+        debugger;
+        const modal = document.getElementById('zombieModal');
+        modal.classList.add('active');
+        if(change=='name'){
+            document.getElementById('newName').classList.remove('hidden');
+            document.getElementById('btnname').classList.remove('hidden');
+            document.getElementById('newName').setAttribute('required','required');
+            document.getElementById('newDNA').classList.add('hidden');
+            document.getElementById('btnDNA').classList.add('hidden');
+            document.getElementById('newDNA').removeAttribute('required');
+            document.getElementById('salePrice').classList.add('hidden');
+            document.getElementById('listZombieButton').classList.add('hidden');
+            document.getElementById('salePrice').removeAttribute('required'); 
+        }else if(change=='dna'){
+            document.getElementById('newName').classList.add('hidden');
+            document.getElementById('btnname').classList.add('hidden');
+            document.getElementById('newName').removeAttribute('required'); 
+            document.getElementById('newDNA').classList.remove('hidden');
+            document.getElementById('btnDNA').classList.remove('hidden');
+            document.getElementById('newDNA').setAttribute('required','required');
+            document.getElementById('salePrice').classList.add('hidden');
+            document.getElementById('listZombieButton').classList.add('hidden');
+            document.getElementById('salePrice').removeAttribute('required'); 
+        }else{
+            document.getElementById('newDNA').classList.add('hidden');
+            document.getElementById('btnDNA').classList.add('hidden');
+            document.getElementById('newDNA').removeAttribute('required');
+            document.getElementById('newName').classList.add('hidden');
+            document.getElementById('btnname').classList.add('hidden');
+            document.getElementById('newName').removeAttribute('required');
+            document.getElementById('salePrice').classList.remove('hidden');
+            document.getElementById('listZombieButton').classList.remove('hidden');
+            document.getElementById('salePrice').setAttribute('required','required');
+        }
+        document.getElementById('zombieId').value = zombieId;
+    }
+
+    function closeModal() {
+    const modal = document.getElementById('zombieModal');
+    modal.classList.remove('active');
+    }
+
+    // Event listener for closing the modal
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+
+
+
+    function displayZombies(ids) {
+  $("#zombies").empty();
+
+  for (let id of ids) {
+    getZombieDetails(id).then(function (zombie) {
+      let imageUrl = `https://robohash.org/${zombie.dna}?set=set2&size=150x150`;
+      const zombieReadyTime = new Date(zombie.readyTime * 1000).toLocaleString();
+
+      const zombieCard = $(`
+        <div class="zombie-card bg-gray-900 text-gray-200 p-4 rounded-lg shadow-lg transition-all transform hover:scale-105">
+          <input type="checkbox" class="zombie-checkbox" data-id="${id}" style="margin-bottom: 10px;">
+          <img src="${imageUrl}" alt="Zombie Avatar" class="zombie-avatar mx-auto mb-4 rounded-full shadow-lg">
+          <ul class="text-center space-y-2">
+            <li><strong>Name:</strong> ${zombie.name}</li>
+            <li><strong>DNA:</strong> ${zombie.dna}</li>
+            <li><strong>Level:</strong> ${zombie.level}</li>
+            <li><strong>Wins:</strong> ${zombie.winCount}</li>
+            <li><strong>Losses:</strong> ${zombie.lossCount}</li>
+            <li class="zombie-countdown" id="zombieCountdown-${id}">Calculating...</li>
+          </ul>
+          <button class="levelupButton btn bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out" onclick="openModal(${id},'name')">
+            Change Name
+          </button>
+          <button class="btn bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out" onclick="openModal(${id},'dna')">
+            Change DNA
+          </button><br>
+          <button class="fightButton btn bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out" style="margin-top: 20px;" onclick="openModal(${id},'market')">List on Marketplace</button>
+        </div>
+      `);
+
+      $("#zombies").append(zombieCard);
+
+      const countdownElement = document.getElementById(`zombieCountdown-${id}`);
+      updateCountdown(new Date(zombie.readyTime * 1000).toLocaleString(), countdownElement, id);
+    });
+  }
+}
+
+async function marketnfts() {
+  let a = await cryptoZombies.methods.getZombiesOnSale().call();
+  let b = await cryptoZombies.methods.getZombiesByOwner(userAccount).call();
+  let c = a.filter(item => !b.includes(item));
+  displaymarketZombies(c);
+}
+
+async function displaymarketZombies(ids) {
+  $("#zombies").empty();
+
+  for (let id of ids) {
+    try {
+      const zombie = await getZombieDetails(id);
+      const saleDetails = await cryptoZombies.methods.zombiesForSale(id).call();
+      const priceInEther = web3.utils.fromWei(saleDetails.price, "ether");
+      let imageUrl = `https://robohash.org/${zombie.dna}?set=set2&size=150x150`;
+
+      const zombieCard = $(`
+        <div class="zombie-card bg-gray-900 text-gray-200 p-4 rounded-lg shadow-lg transition-all transform hover:scale-105">
+          <img src="${imageUrl}" alt="Zombie Avatar" class="zombie-avatar mx-auto mb-4 rounded-full shadow-lg">
+          <button class="fightButton btn bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out" style="margin-top: 10px;margin-bottom:10px" onclick="buyZombie(${id},${priceInEther})">Buy for ${priceInEther} ETH</button>
+          <ul class="text-center space-y-2">
+            <li><strong>Name:</strong> ${zombie.name}</li>
+            <li><strong>DNA:</strong> ${zombie.dna}</li>
+            <li><strong>Level:</strong> ${zombie.level}</li>
+          </ul>
+        </div>
+      `);
+
+      $("#zombies").append(zombieCard);
+
+    } catch (error) {
+      console.error(`Failed to fetch data for zombie ID ${id}:`, error);
+    }
+  }
+}
+
+
+
+    function createRandomZombie(name) {
+      $("#txStatus").text("Creating new zombie on the blockchain. This may take a while...");
+
+      return cryptoZombies.methods.createRandomZombie(name)
+        .send({ from: userAccount,gas: 1000000})
+        .on("receipt", function (receipt) {
+          $("#txStatus").text("Successfully created " + name + "!");
+          getZombiesByOwner(userAccount).then(displayZombies);
+        })
+        .on("error", function (error) {
+          $("#txStatus").text(error);
+        });
+    }
+
+    function feedOnKitty(zombieId, kittyId) {
+      $("#txStatus").text("Eating a kitty. This may take a while...");
+      return cryptoZombies.methods.feedOnKitty(zombieId, kittyId)
+        .send({ from: userAccount })
+        .on("receipt", function (receipt) {
+          $("#txStatus").text("Ate a kitty and spawned a new Zombie!");
+          getZombiesByOwner(userAccount).then(displayZombies);
+        })
+        .on("error", function (error) {
+          $("#txStatus").text(error);
+        });
+    }
+
+    function levelUp(zombieId) {
+      $("#txStatus").text("Leveling up your zombie...");
+      return cryptoZombies.methods.levelUp(zombieId)
+        .send({ from: userAccount, value: web3.utils.toWei("0.001", "ether") })
+        .on("receipt", function (receipt) {
+          $("#txStatus").text("Power overwhelming! Zombie successfully leveled up");
+        })
+        .on("error", function (error) {
+          $("#txStatus").text(error);
+        });
+    }
+
+    document.querySelector('.transferZombieButton').addEventListener('click', () => {
+    
+        toggleDropdown(true);
+        
+        const selectedCheckboxes = document.querySelectorAll('.zombie-checkbox:checked'); // Get all checked checkboxes
+
+        if (selectedCheckboxes.length==0) {
+            alert('Please select a zombie to transfer!');
+            toggleDropdown(false); 
+            return;
+        }
+        const recipientAddress = document.querySelector('#recipientDropdown').value;
+        if (recipientAddress && recipientAddress!='-- Select an Account --') {
+            selectedCheckboxes.forEach((checkbox) => {
+                transferZombie(checkbox.getAttribute('data-id'), recipientAddress);
+            });
+        }else {
+            alert('Please select a recipient account to transfer the zombie to.');
+            getAccounts();
+        }
+  });
+
+
+    function transferZombie(zombieId, recipientAddress) {
+    debugger;
+    $("#txStatus").text("Transferring your zombie...");
+
+    cryptoZombies.methods
+        .transferFrom(userAccount, recipientAddress, zombieId)
+        .send({ from: userAccount })
+        .on("receipt", function (receipt) {
+            $("#txStatus").text("Zombie transferred successfully!");
+            getZombiesByOwner(userAccount).then(displayZombies);
+        })
+        .on("error", function (error) {
+            $("#txStatus").text("Error transferring zombie: " + error.message);
+        });
+    }
+
+    let availableAccounts = []; 
+    async function getAccounts() {
+        try {
+            availableAccounts = await ethereum.enable(); 
+            populateAccountDropdown(availableAccounts); 
+        } catch (error) {
+            console.log('User denied account access', error);
+        }
+    }
+
+    function populateAccountDropdown(accounts) {
+        const dropdown = document.querySelector('#recipientDropdown');
+        dropdown.innerHTML = '';
+        const option = document.createElement('option');
+        option.textContent = "-- Select an Account --"; 
+        dropdown.appendChild(option);
+        accounts.forEach(account => {
+            if(userAccount!=account){
+                const option = document.createElement('option');
+                option.value = account;
+                option.textContent = account; 
+                dropdown.appendChild(option);
+            }
+        });
+    }
+
+    function toggleDropdown(show) {
+        const dropdownContainer = document.querySelector('#recipientDropdownContainer');
+        dropdownContainer.style.display = show ? 'flex' : 'none';
+    }
+
+
+
+
+
+    function getZombieDetails(id) {
+      return cryptoZombies.methods.zombies(id).call()
+    }
+
+    function zombieToOwner(id) {
+      return cryptoZombies.methods.zombieToOwner(id).call()
+    }
+
+    function getZombiesByOwner(owner) {
+      return cryptoZombies.methods.getZombiesByOwner(owner).call()
+    }
+
+    async function buyZombie(zombieId, price) {
+    try {
+            const priceInWei = web3.utils.toWei(price.toString(), "ether");
+
+            await cryptoZombies.methods
+                .buyZombie(zombieId)
+                .send({ from: userAccount, value: priceInWei })
+                .on("receipt", function (receipt) {
+                    console.log("Zombie purchased successfully!", receipt);
+                    alert(`Successfully bought Zombie ID ${zombieId}!`);
+                    
+                    // Refresh the marketplace listing
+                    document.getElementById("zombiesForSaleList").innerHTML = ""; // Clear existing
+                    getZombiesOnMarketplace(); // Refresh the list
+                })
+                .on("error", function (error) {
+                    console.error("Failed to buy zombie:", error);
+                    alert("Error: Unable to purchase zombie. See console for details.");
+                });
+        } catch (error) {
+            console.error("Error buying zombie:", error);
+            alert("Failed to buy zombie. See console for details.");
+        }
+    }
+
+
+    window.addEventListener('load', async () => {
+      // Modern dapp browsers...
+      if (window.ethereum) {
+        window.web3 = new Web3(ethereum);
+        try {
+          // Request account access if needed
+          const accounts = await ethereum.enable();
+          // Accounts now exposed
+          userAccount = accounts[0];
+          startApp()
+        } catch (error) {
+          // User denied account access...
+        }
+      }
+      // Legacy dapp browsers...
+      else if (window.web3) {
+        window.web3 = new Web3(web3.currentProvider);
+        // Accounts always exposed
+        userAccount = web3.eth.accounts[0];
+        startApp()
+      }
+      // Non-dapp browsers...
+      else {
+        console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+      }
+    });
+
+    document.getElementById('changeNameForm').addEventListener('submit', function (event) {
+       event.preventDefault();
+        const zombieId = document.getElementById('zombieId').value;
+
+        if(!document.getElementById('btnDNA').classList.contains('hidden')){
+            const str = document.getElementById('newDNA').value;
+            if(str.length>2 && str.charAt(str.length-1)=='0' && str.charAt(str.length-2)=='0'){
+                changeDna(zombieId,str);
+            }else{
+                alert('Either should be more than 2 length and should end with 00');
+                return;
+            }
+        }else if(!document.getElementById('btnname').classList.contains('hidden')){
+            const newName = document.getElementById('newName').value;
+            changeZombieName(zombieId, newName);
+        }else{
+          const salePrice = document.getElementById("salePrice").value;
+          listtomarket(salePrice,zombieId);
+        }
+
+        closeModal();
+    });
+    
+
+    function showTemporaryMessage(msg) {
+        $("#txStatus").text(msg).addClass("highlight");
+        setTimeout(() => {
+            $("#txStatus").text("").removeClass("highlight");
+        }, 10000);
+    }
+
+    async function changeDna(zombieId,newDNA){
+        cryptoZombies.methods.changeDna(zombieId, newDNA).send({ from: userAccount });
+        showTemporaryMessage("DNA Changed");
+        getZombiesByOwner(userAccount).then(displayZombies);
+    }
+
+    async function listtomarket(ethPrice, zombieID) {
+    if (ethPrice && !isNaN(ethPrice) && parseFloat(ethPrice) > 0) {
+        // Convert ethPrice to a string before passing to toWei
+        const priceInWei = web3.utils.toWei(ethPrice.toString(), "ether");
+        try {
+            await cryptoZombies.methods
+                .listZombieForSale(zombieID, priceInWei)
+                .send({ from: userAccount })
+                .on("receipt", function (receipt) {
+                    console.log("Zombie listed for sale!", receipt);
+                })
+                .on("error", function (error) {
+                    console.error("Failed to list zombie for sale:", error);
+                });
+            alert(`Zombie ID ${zombieID} is now listed for sale at ${ethPrice} ETH.`);
+        } catch (error) {
+            console.error("Error listing zombie for sale:", error);
+            alert("Failed to list the zombie for sale. See console for details.");
+        }
+        console.log('Listing zombie on marketplace for ' + ethPrice + ' ETH...');
+    } else {
+        alert("Please enter a valid ETH price.");
+        return;
+    }
+}
+
+
+    function changeZombieName(zombieId, newName) {
+        try {
+            const receipt = cryptoZombies.methods.changeName(zombieId, newName)
+            .send({ from: userAccount });
+            $("#txStatus").text("Name changed");
+            getZombiesByOwner(userAccount).then(displayZombies);
+            toggleDropdown(false);
+            return;
+        } catch (error) {
+            $("#txStatus").text("Error changing name:" + error);
+        }
+
+    }
+    function stringToBytes32(str) {
+        return web3.utils.rightPad(web3.utils.asciiToHex(str), 64);
+    }
+    
+
+    async function createZombiesInBulk(bytes32Names,dnas) {
+        try {
+            const receipt = await cryptoZombies.methods
+                .createZombiesInBulk(bytes32Names, dnas)
+                .send({ from: userAccount });
+            $("#txStatus").text("Batch Zombie Creation Successful!");
+            getZombiesByOwner(userAccount).then(displayZombies);
+        } catch (error) {
+            $("#txStatus").text("Error creating zombies: " + error);
+        }
+    }
+
+    document.querySelector('.bulkDeleteButton').addEventListener('click',()=>{
+    const checkboxes = document.querySelectorAll('.zombie-checkbox:checked');
+    const selectedIds = [];
+    checkboxes.forEach(checkbox => {
+        selectedIds.push(parseInt(checkbox.getAttribute('data-id')));
+    });
+    if(selectedIds.length==0){
+        alert('Please select the zombie to delete...');
+      return;
+    }
+    bulkDelete(selectedIds);
+  });
+
+    ethereum.on('accountsChanged', (accounts) => {
+      window.location.reload();
+      getZombiesByOwner(userAccount).then(displayZombies);
+      toggleDropdown(false);
+    });
+
+    ethereum.on('chainChanged', (chainId) => {
+      window.location.reload();
+    });
+
+    createzombieButton.addEventListener('click', () => {
+      createRandomZombie(userAccount);
+      toggleDropdown(false);
+    });
+
+    showZombieButton.addEventListener('click', () => {
+      getZombiesByOwner(userAccount).then(displayZombies);
+      toggleDropdown(false);
+    });
+
+    levelupButton.addEventListener('click', () => {
+        const selectedCheckboxes = document.querySelectorAll('.zombie-checkbox:checked');
+
+        if (selectedCheckboxes.length==0) {
+            alert('Please select a zombie to Level Up!');
+            toggleDropdown(false); 
+            return;
+        }
+        const tmp = [];
+        selectedCheckboxes.forEach((checkbox)=>{
+            tmp.push(checkbox.getAttribute('data-id'));
+        });
+
+        if (tmp.length > 0) {
+            Promise.all(tmp.map(levelUp))
+            .then(() => {
+                $("#txStatus").text("All zombies successfully leveled up!");
+                getZombiesByOwner(userAccount).then(displayZombies);
+            })
+            .catch((error) => {
+                $("#txStatus").text(`Error leveling up some zombies: ${error.message}`);
+            });
+        } else {
+            $("#txStatus").text("No zombies found for this user.");
+        }
+        toggleDropdown(false);
+    });
+  </script>
+</body>
+
+</html>

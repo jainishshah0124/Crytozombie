@@ -1,0 +1,363 @@
+body {
+    background-color: #1e1e1e; /* Dark background */
+    background-image: url('https://i.pinimg.com/1200x/e9/62/73/e96273a3a0f8c35917290922ec667e24.jpg'); 
+    background-size: cover;
+    background-position: center;
+    color: #f5f5f5; /* Light text for contrast */
+    background-blend-mode: difference;
+    background-attachment: fixed;
+    overflow: hidden; 
+  }
+
+  .zombie-avatar {
+    width: 150px;
+    height: 150px;
+    transition: transform 0.3s ease;
+  }
+
+  .zombie:hover .zombie-avatar {
+    transform: scale(1.1);
+  }
+
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Button Hover Animation */
+  .btn {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+/* General Zombie card styling */
+.zombie-card {
+    position: relative;
+    background-color: #1f2937; /* Dark background */
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 10px; /* Add margin between each zombie card */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    z-index: 1; /* Ensure zombie cards stay behind modal when open */
+  }
+  
+  .zombie-card:hover {
+    transform: scale(1.05); /* Scale up on hover */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3); /* Add shadow on hover */
+  }
+  
+  /* Red button for "Change Name" */
+  .change-name-btn {
+    background-color: #e3342f; /* Red color */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .change-name-btn:hover {
+    background-color: #cc1f1a; /* Darker red on hover */
+  }
+  
+  /* Modal Styling */
+  .zombie-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    z-index: 100; /* Ensure the modal is above everything */
+  }
+  
+  .zombie-modal.active {
+    display: flex; /* Show modal when active */
+    background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent black background */
+  }
+  
+  /* Modal Content Styling */
+  .modal-content {
+    background-color: #1f2937;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 101; /* Ensure modal content is above the overlay */
+    width: 400px;
+  }
+  
+  .zombie-modal .modal-content {
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Make zombie cards inactive when modal is open */
+  .zombie-modal.active ~ .container {
+    pointer-events: none;
+    opacity: 0.3; /* Make everything but modal inactive and faded */
+  }
+
+  .zombie {
+    opacity: 0;
+    margin: 30px;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s ease forwards;
+    text-align: center; /* Center the zombie details */
+  }
+
+  .fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 0; 
+    z-index: 100;
+  }
+  .highlight {
+    background-color: yellow; 
+    color: black;
+    font-weight: bold; 
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.5s ease;
+    width: fit-content;
+  }
+
+  .zombie-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+  }
+  
+  .zombie-modal.active {
+    display: flex;
+  }
+  
+  .modal-content {
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 101;
+    width: 400px;
+  }
+  
+  .bulk-field {
+    margin-bottom: 10px;
+  }
+  #addBulkField {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+  }
+  body, html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.container {
+  transition: transform 0.3s ease;
+}
+
+.sidebar {
+  width: 60px;
+  height: 100vh;
+  background-color: #1e1e1e;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  transition: width 0.3s ease;
+}
+
+.menu-button {
+  background: none;
+  color: white;
+  border: none;
+  font-size: 20px;
+  padding: 20px;
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.menu-button:hover {
+  background-color: #333;
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 20px;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.sidebar:hover {
+  width: 250px;
+}
+
+.sidebar:hover .sidebar-content {
+  opacity: 1;
+}
+
+.main-content {
+  padding: 20px;
+  flex: 1;
+  margin-left: 60px;
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar:hover ~ .main-content {
+  margin-left: 250px;
+}
+
+.sidebar-content button {
+    margin-bottom: 20px;
+  }
+  .opponent-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+  }
+  
+  .opponent-modal.active-opponent {
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.75);
+  }
+  
+  .opponent-modal-content {
+    background-image: url('https://i.pinimg.com/1200x/e9/62/73/e96273a3a0f8c35917290922ec667e24.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 201;
+    width: 900px; /* Adjusted width for 3 zombie cards */
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .opponent-zombie-card {
+    width: 250px;
+    min-height: 400px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    word-wrap: break-word;
+    overflow: hidden;
+    padding: 10px;
+  }
+  
+  .opponent-zombies-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    justify-content: center;
+  }
+  
+  .fightOpponentButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+  }
+  
+  
+  #closeOpponentModal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: red;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    border: 2px solid white;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  #closeOpponentModal:hover {
+    background-color: darkred;
+    transform: scale(1.1);
+  }
+  .fight-loading {
+    display: none; /* Hide by default */
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2000;
+    color: white;
+    font-size: 24px;
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .loading-icon {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #ccc;
+    border-top: 5px solid #ff0000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
