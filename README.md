@@ -12,6 +12,10 @@
 
 https://github.com/jainishshah0124/Crytozombie
 
+#Video Demo
+
+https://www.youtube.com/watch?v=3TkMWQ_AEqU
+
 # Improvments
 
 1. Built a nicer website for the DApp.
